@@ -71,7 +71,7 @@ void Epsm::Init()
     AddMeshToList(rightWall);
     
     // obstacles
-    Mesh* obstacle = object2D::triangle("obstacle", corner, 400, glm::vec3(0.8f, 0.8f, 0.3f), true);
+    Mesh* obstacle = object2D::square("obstacle", corner, 200, glm::vec3(0.8f, 0.8f, 0.3f), true);
     AddMeshToList(obstacle);
 
     // pursuer
@@ -125,25 +125,25 @@ void Epsm::Update(float deltaTimeSeconds)
     // obstacles
     modelMatrix = glm::mat3(1);
     modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX / 2 - 100, limY / 2 + 150);
+    modelMatrix *= transform2D::Translate(limX / 2 - 100, limY / 2 + 300);
     RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
     modelMatrix = glm::mat3(1);
     modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(180, limY / 2 - 200);
-    modelMatrix *= transform2D::Rotate(M_PI / 2);
+    modelMatrix *= transform2D::Translate(100, limY / 2);
+    //modelMatrix *= transform2D::Rotate(M_PI / 2);
     RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
     modelMatrix = glm::mat3(1);
     modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX / 2 + 100, 200);
-    modelMatrix *= transform2D::Rotate(M_PI);
+    modelMatrix *= transform2D::Translate(limX / 2 + 100, 100);
+    //modelMatrix *= transform2D::Rotate(M_PI);
     RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
     modelMatrix = glm::mat3(1);
     modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX - 180, limY / 2 + 200);
-    modelMatrix *= transform2D::Rotate(-M_PI / 2);
+    modelMatrix *= transform2D::Translate(limX - 100, limY / 2);
+    //modelMatrix *= transform2D::Rotate(-M_PI / 2);
     RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
     

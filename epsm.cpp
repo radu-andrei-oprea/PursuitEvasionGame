@@ -65,6 +65,7 @@ bool Epsm::isCoordinateValid(float x, float y)
     return false; // Coordinate is outside the arena
 }
 
+// function for determining visual contact, based on Bresenham's line algorithm
 bool Epsm::hasLineOfSight(float startX, float startY, float endX, float endY) 
 {
     // are the start and end coordinates are valid?
@@ -277,42 +278,66 @@ void Epsm::Update(float deltaTimeSeconds)
         modelMatrix *= transform2D::Translate(oRightX, oRightY);
         RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
     }
+
+    // change pursuer direction depending on scenario
+    switch (position)
+    {
+    case 1:
+        translateX += -50 * deltaTimeSeconds;
+        translateY += 0;
+        break;
+    case 2:
+        translateX += 0;
+        translateY += -50 * deltaTimeSeconds;
+        break;
+    case 3:
+        translateX += 50 * deltaTimeSeconds;
+        translateY += 0;
+        break;
+    case 4:
+        translateX += 0;
+        translateY += 50 * deltaTimeSeconds;
+        break;
+    }
     
     // render pursuer
     {
         modelMatrix = glm::mat3(1);
-        modelMatrix *= transform2D::Translate(pX, pY);
+        modelMatrix *= transform2D::Translate(pX + translateX, pY + translateY);
         RenderMesh2D(meshes["pursuer"], shaders["VertexColor"], modelMatrix);
     }
 
-    cout << hasLineOfSight(pX, pY, posX, posY);
+
+
+    // if there is visual contact
+    if (hasLineOfSight(pX + translateX, pY + translateY, posX, posY))
+    {
+        seen = 1;
+    }
     
+
     // change evader positions
     {
         if (seen == 1) {
             position++;
             seen = 0;
 
-            if (position == 4) {
+            if (position == 5) {
                 position = 1;
             }
+        }
 
-            switch (position)
-            {
-            case 1:
-                posX = limX / 3 - 50; posY = limY - 50;
-                break;
-
-            case 2:
-                posX = 50; posY = limY / 2 - 150;
-                break;
-            case 3:
-                posX = limX / 2 + 250; posY = 50;
-                break;
-            case 4:
-                posX = limX - 50; posY = limY / 2 + 150;
-                break;
-            }
+        if (position == 1) {
+            posX = limX / 3 - 50; posY = limY - 50;
+        }
+        else if (position == 2) {
+            posX = 50; posY = limY / 2 - 150;
+        }
+        else if (position == 3) {
+            posX = limX / 2 + 250; posY = 50;
+        }
+        else if (position == 4) {
+            posX = limX - 50; posY = limY / 2 + 150;
         }
     }
 

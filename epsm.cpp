@@ -29,6 +29,41 @@ Epsm::~Epsm()
 {
 }
 
+bool Epsm::isCoordinateValid(float x, float y)
+{
+    if (x >= arenaV.bottomLeft.x && x <= arenaV.bottomRight.x &&
+        y >= arenaV.bottomLeft.y && y <= arenaV.topLeft.y)
+    {
+        // obstacle 1
+        if (x >= oTopV.bottomLeft.x && x <= oTopV.bottomRight.x &&
+            y >= oTopV.bottomLeft.y && y <= oTopV.topLeft.y)
+        {
+            return false; // Coordinate is on an obstacle
+        }
+        // obstacle 2
+        if (x >= oLeftV.bottomLeft.x && x <= oLeftV.bottomRight.x &&
+            y >= oLeftV.bottomLeft.y && y <= oLeftV.topLeft.y)
+        {
+            return false; // Coordinate is on an obstacle
+        }
+        // obstacle 3
+        if (x >= oBottomV.bottomLeft.x && x <= oBottomV.bottomRight.x &&
+            y >= oBottomV.bottomLeft.y && y <= oBottomV.topLeft.y)
+        {
+            return false; // Coordinate is on an obstacle
+        }
+        // obstacle 4
+        if (x >= oRightV.bottomLeft.x && x <= oRightV.bottomRight.x &&
+            y >= oRightV.bottomLeft.y && y <= oRightV.topLeft.y)
+        {
+            return false; // Coordinate is on an obstacle
+        }
+
+        return true; // Coordinate is within the arena and not on any obstacle
+    }
+
+    return false; // Coordinate is outside the arena
+}
 
 void Epsm::Init()
 {
@@ -54,7 +89,12 @@ void Epsm::Init()
 
     // pursuer origins
     pX = limX - 300; pY = limY / 2 + 150;
-    eX = limX - 500; eY = limY / 2 + 150;
+    eX = 0; eY = 0;
+    // eX = limX - 500; eY = limY / 2 + 150;
+
+    // pursuer is not seen at first
+    seen = 0;
+    position = 1;
 
     // Initialize tx and ty (the translation steps)
     translateX = 0;
@@ -164,7 +204,7 @@ void Epsm::Update(float deltaTimeSeconds)
         RenderMesh2D(meshes["rightWall"], shaders["VertexColor"], modelMatrix);
     }
 
-    // obstacles
+    // render obstacles
     {
         // top
         modelMatrix = glm::mat3(1);
@@ -187,19 +227,24 @@ void Epsm::Update(float deltaTimeSeconds)
         RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
     }
     
-    // pursuer
+    // render pursuer
     {
         modelMatrix = glm::mat3(1);
-        //modelMatrix *= transform2D::Translate(0, 0);
         modelMatrix *= transform2D::Translate(pX, pY);
         RenderMesh2D(meshes["pursuer"], shaders["VertexColor"], modelMatrix);
     }
+    
+    // change evader positions
+    {
+        if (seen == 1) {
 
-    // evader
+        }
+    }
+
+    // render evader
     {
         modelMatrix = glm::mat3(1);
-        //modelMatrix *= transform2D::Translate(0, 0);
-        modelMatrix *= transform2D::Translate(eX, eY);
+        modelMatrix *= transform2D::Translate(eX + posX, eY + posY);
         RenderMesh2D(meshes["evader"], shaders["VertexColor"], modelMatrix);
     }
 }   
@@ -247,7 +292,6 @@ void Epsm::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 
 void Epsm::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
 {
-    // Add mouse button release event
 }
 
 

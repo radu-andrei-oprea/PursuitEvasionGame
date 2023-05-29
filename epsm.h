@@ -40,6 +40,8 @@ namespace m1
         void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
         void OnWindowResize(int width, int height) override;
 
+        bool isCoordinateValid(float x, float y)
+
     protected:
         float cx, cy;
         glm::mat3 modelMatrix, headMatrix;
@@ -66,5 +68,12 @@ namespace m1
         obtacleVerts oBottomV;
         obtacleVerts oLeftV;
         obtacleVerts oRightV;
+
+
+        // variable if evader is seen by pursuer
+        int seen;
+        // variable for positions;
+        int position;
+        float posX, posY;
     };
 }   // namespace m1

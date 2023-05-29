@@ -154,6 +154,7 @@ void Epsm::Update(float deltaTimeSeconds)
     RenderMesh2D(meshes["pursuer"], shaders["VertexColor"], modelMatrix);
 
     // evader
+
     modelMatrix = glm::mat3(1);
     modelMatrix *= transform2D::Translate(0, 0);
     modelMatrix *= transform2D::Translate(limX - 500, limY / 2 + 150);

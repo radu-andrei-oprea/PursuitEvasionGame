@@ -55,6 +55,10 @@ void Epsm::Init()
     // barrier width
     width = 0.1f;
 
+    // pursuer origins
+    pX = limX - 300; pY = limY / 2 + 150;
+    eX = limX - 500; eY = limY / 2 + 150;
+
     
 
     // outer walls
@@ -124,40 +128,36 @@ void Epsm::Update(float deltaTimeSeconds)
 
     // obstacles
     modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, 0);
+    //modelMatrix *= transform2D::Translate(0, 0);
     modelMatrix *= transform2D::Translate(limX / 2 - 100, limY / 2 + 300);
     RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
     modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, 0);
+    //modelMatrix *= transform2D::Translate(0, 0);
     modelMatrix *= transform2D::Translate(100, limY / 2);
-    //modelMatrix *= transform2D::Rotate(M_PI / 2);
     RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
     modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, 0);
+    //modelMatrix *= transform2D::Translate(0, 0);
     modelMatrix *= transform2D::Translate(limX / 2 + 100, 100);
-    //modelMatrix *= transform2D::Rotate(M_PI);
     RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
     modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, 0);
+    //modelMatrix *= transform2D::Translate(0, 0);
     modelMatrix *= transform2D::Translate(limX - 100, limY / 2);
-    //modelMatrix *= transform2D::Rotate(-M_PI / 2);
     RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
     
     // pursuer
     modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX - 300, limY / 2 + 150);
+    //modelMatrix *= transform2D::Translate(0, 0);
+    modelMatrix *= transform2D::Translate(pX, pY);
     RenderMesh2D(meshes["pursuer"], shaders["VertexColor"], modelMatrix);
 
     // evader
-
     modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX - 500, limY / 2 + 150);
+    //modelMatrix *= transform2D::Translate(0, 0);
+    modelMatrix *= transform2D::Translate(eX, eY);
     RenderMesh2D(meshes["evader"], shaders["VertexColor"], modelMatrix);
 
 }   

@@ -39,6 +39,10 @@ namespace m1
         float limX, limY;
         float width;
 
+        //character coords
+        float pX, pY;
+        float eX, eY;
+
 
         
     };

@@ -69,6 +69,9 @@ void Epsm::Init()
 
     Mesh* rightWall = object2D::square("rightWall", corner, resolution.y / 3, glm::vec3(0.3f, 0.8f, 0.3f), true);
     AddMeshToList(rightWall);
+
+    Mesh* obstacle1 = object2D::triangle("obstacle1", corner, 500, glm::vec3(0.8f, 0.8f, 0.3f), true);
+    AddMeshToList(obstacle1);
 }
 
 
@@ -108,7 +111,15 @@ void Epsm::Update(float deltaTimeSeconds)
     modelMatrix *= transform2D::Translate(limX, 0);
     modelMatrix *= transform2D::Scale(width, 50);
     RenderMesh2D(meshes["rightWall"], shaders["VertexColor"], modelMatrix);
-}
+
+
+    // obstacles
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(0, 0);
+    modelMatrix *= transform2D::Translate(limX / 2, limY / 2);
+    RenderMesh2D(meshes["obstacle1"], shaders["VertexColor"], modelMatrix);
+
+}   
 
 
 void Epsm::FrameEnd()

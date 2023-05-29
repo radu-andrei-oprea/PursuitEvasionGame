@@ -53,19 +53,19 @@ Mesh* object2D::triangle(
 {
     glm::vec3 corner = leftBottomCorner;
 
-    /*std::vector<VertexFormat> vertices =
+    std::vector<VertexFormat> vertices =
     {
         VertexFormat(corner, color),
-        VertexFormat(corner + glm::vec3(length, length / 4, 0), color),
+        VertexFormat(corner + glm::vec3(length, 0, 0), color),
         VertexFormat(corner + glm::vec3(0, length / 2, 0), color),
-    };*/
+    };
 
-    std::vector<VertexFormat> vertices =
+    /*std::vector<VertexFormat> vertices =
     {
         VertexFormat(corner + glm::vec3(-length / 2, -length / 4, 0), color),
         VertexFormat(corner + glm::vec3(length / 2, 0, 0), color),
         VertexFormat(corner + glm::vec3(-length / 2, length / 4, 0), color),
-    };
+    };*/
 
     Mesh* triangle = new Mesh(name);
     std::vector<unsigned int> indices = { 0, 1, 2 };

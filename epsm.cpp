@@ -69,9 +69,18 @@ void Epsm::Init()
 
     Mesh* rightWall = object2D::square("rightWall", corner, resolution.y / 3, glm::vec3(0.3f, 0.8f, 0.3f), true);
     AddMeshToList(rightWall);
+    
+    // obstacles
+    Mesh* obstacle = object2D::triangle("obstacle", corner, 400, glm::vec3(0.8f, 0.8f, 0.3f), true);
+    AddMeshToList(obstacle);
 
-    Mesh* obstacle1 = object2D::triangle("obstacle1", corner, 500, glm::vec3(0.8f, 0.8f, 0.3f), true);
-    AddMeshToList(obstacle1);
+    // pursuer
+    Mesh* pursuer = object2D::circle("pursuer", corner, 25, glm::vec3(0.3f, 0.3f, 0.8f));
+    AddMeshToList(pursuer);
+
+    // evader
+    Mesh* evader = object2D::circle("evader", corner, 25, glm::vec3(0.8f, 0.3f, 0.3f));
+    AddMeshToList(evader);
 }
 
 
@@ -116,8 +125,39 @@ void Epsm::Update(float deltaTimeSeconds)
     // obstacles
     modelMatrix = glm::mat3(1);
     modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX / 2, limY / 2);
-    RenderMesh2D(meshes["obstacle1"], shaders["VertexColor"], modelMatrix);
+    modelMatrix *= transform2D::Translate(limX / 2 - 100, limY / 2 + 150);
+    RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
+
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(0, 0);
+    modelMatrix *= transform2D::Translate(180, limY / 2 - 200);
+    modelMatrix *= transform2D::Rotate(M_PI / 2);
+    RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
+
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(0, 0);
+    modelMatrix *= transform2D::Translate(limX / 2 + 100, 200);
+    modelMatrix *= transform2D::Rotate(M_PI);
+    RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
+
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(0, 0);
+    modelMatrix *= transform2D::Translate(limX - 180, limY / 2 + 200);
+    modelMatrix *= transform2D::Rotate(-M_PI / 2);
+    RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
+
+    
+    // pursuer
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(0, 0);
+    modelMatrix *= transform2D::Translate(limX - 300, limY / 2 + 150);
+    RenderMesh2D(meshes["pursuer"], shaders["VertexColor"], modelMatrix);
+
+    // evader
+    modelMatrix = glm::mat3(1);
+    modelMatrix *= transform2D::Translate(0, 0);
+    modelMatrix *= transform2D::Translate(limX - 500, limY / 2 + 150);
+    RenderMesh2D(meshes["evader"], shaders["VertexColor"], modelMatrix);
 
 }   
 

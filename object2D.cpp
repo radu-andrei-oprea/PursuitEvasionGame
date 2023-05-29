@@ -56,7 +56,7 @@ Mesh* object2D::triangle(
     std::vector<VertexFormat> vertices =
     {
         VertexFormat(corner, color),
-        VertexFormat(corner + glm::vec3(length, 0, 0), color),
+        VertexFormat(corner + glm::vec3(length, length / 2, 0), color),
         VertexFormat(corner + glm::vec3(0, length / 2, 0), color),
     };
 
@@ -82,14 +82,10 @@ Mesh* object2D::circle(
     glm::vec3 color
 )
 {
-
     std::vector<VertexFormat> vertices;
-
-    //vertices.insert(vertices.begin(), VertexFormat(center, color));
 
     GLfloat vertX[360];
     GLfloat vertY[360];
-
 
     for (int i = 0; i < 360; i++) {
 

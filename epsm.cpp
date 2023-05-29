@@ -90,7 +90,7 @@ void Epsm::Init()
     // pursuer origins
     pX = limX - 300; pY = limY / 2 + 150;
     eX = 0; eY = 0;
-    // eX = limX - 500; eY = limY / 2 + 150;
+    posX = limX / 3 - 50; posY = limY - 50;
 
     // pursuer is not seen at first
     seen = 0;
@@ -237,7 +237,29 @@ void Epsm::Update(float deltaTimeSeconds)
     // change evader positions
     {
         if (seen == 1) {
+            position++;
+            seen = 0;
 
+            if (position == 4) {
+                position = 1;
+            }
+
+            switch (position)
+            {
+            case 1:
+                posX = limX / 3 - 50; posY = limY - 50;
+                break;
+
+            case 2:
+                posX = 50; posY = limY / 2 - 150;
+                break;
+            case 3:
+                posX = limX / 2 + 250; posY = 50;
+                break;
+            case 4:
+                posX = limX - 50; posY = limY / 2 + 150;
+                break;
+            }
         }
     }
 

@@ -40,7 +40,7 @@ namespace m1
         void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
         void OnWindowResize(int width, int height) override;
 
-        bool isCoordinateValid(float x, float y)
+        bool isCoordinateValid(float x, float y);
 
     protected:
         float cx, cy;

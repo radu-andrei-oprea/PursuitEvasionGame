@@ -65,6 +65,57 @@ bool Epsm::isCoordinateValid(float x, float y)
     return false; // Coordinate is outside the arena
 }
 
+bool Epsm::hasLineOfSight(float startX, float startY, float endX, float endY) 
+{
+    // are the start and end coordinates are valid?
+    if (!isCoordinateValid(startX, startY) || !isCoordinateValid(endX, endY)) {
+        return false;
+    }
+
+    // differences between the start and end coordinates
+    float dx = endX - startX;
+    float dy = endY - startY;
+
+    // absolute differences
+    float adx = std::abs(dx);
+    float ady = std::abs(dy);
+
+    // sign of the differences
+    int signX = dx > 0 ? 1 : -1;
+    int signY = dy > 0 ? 1 : -1;
+
+    // Initialize the error variables
+    float error = 0;
+    float deltaError = ady / adx;
+
+    // Initialize the current coordinates
+    float currentX = startX;
+    float currentY = startY;
+
+    // Iterate over the x coordinates
+    while (currentX != endX) {
+        // Update the error
+        error += deltaError;
+
+        // if error >= 0.5, move in the y direction
+        if (error >= 0.5) {
+            currentY += signY;
+            error -= 1;
+        }
+
+        // check if the current coordinate is valid
+        // if not valid, obstacle is blocking the line of sight
+        if (!isCoordinateValid(currentX, currentY)) {
+            return false; 
+        }
+
+        // move in the x direction
+        currentX += signX;
+    }
+
+    return true;
+}
+
 void Epsm::Init()
 {
     glm::ivec2 resolution = window->GetResolution();
@@ -233,6 +284,8 @@ void Epsm::Update(float deltaTimeSeconds)
         modelMatrix *= transform2D::Translate(pX, pY);
         RenderMesh2D(meshes["pursuer"], shaders["VertexColor"], modelMatrix);
     }
+
+    cout << hasLineOfSight(pX, pY, posX, posY);
     
     // change evader positions
     {

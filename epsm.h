@@ -5,13 +5,14 @@
 
 namespace m1
 {
+    // x, y pair
     struct coordPair {
         float x;
         float y;
     };
 
     // obstacle vertices structure
-    struct obtacleVerts {
+    struct obstacleVerts {
         coordPair bottomLeft;
         coordPair bottomRight;
         coordPair topLeft;
@@ -41,6 +42,7 @@ namespace m1
         void OnWindowResize(int width, int height) override;
 
         bool isCoordinateValid(float x, float y);
+        bool hasLineOfSight(float startX, float startY, float endX, float endY);
 
     protected:
         float cx, cy;
@@ -63,11 +65,11 @@ namespace m1
         float oRightX, oRightY;
 
         // obstacle vertices
-        obtacleVerts arenaV;
-        obtacleVerts oTopV;
-        obtacleVerts oBottomV;
-        obtacleVerts oLeftV;
-        obtacleVerts oRightV;
+        obstacleVerts arenaV;
+        obstacleVerts oTopV;
+        obstacleVerts oBottomV;
+        obstacleVerts oLeftV;
+        obstacleVerts oRightV;
 
 
         // variable if evader is seen by pursuer

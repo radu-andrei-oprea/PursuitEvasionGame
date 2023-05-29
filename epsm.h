@@ -5,6 +5,19 @@
 
 namespace m1
 {
+    struct coordPair {
+        float x;
+        float y;
+    };
+
+    // obstacle vertices structure
+    struct obtacleVerts {
+        coordPair bottomLeft;
+        coordPair bottomRight;
+        coordPair topLeft;
+        coordPair topRight;
+    };
+
     class Epsm : public gfxc::SimpleScene
     {
     public:
@@ -31,11 +44,9 @@ namespace m1
         float cx, cy;
         glm::mat3 modelMatrix, headMatrix;
         float translateX, translateY;
-        float scaleX, scaleY;
-        float angularStep;
 
         //border variables
-        float side;
+        /*float side;*/
         float limX, limY;
         float width;
 
@@ -43,7 +54,17 @@ namespace m1
         float pX, pY;
         float eX, eY;
 
+        // obstacle coords
+        float oTopX, oTopY;
+        float oBottomX, oBottomY;
+        float oLeftX, oLeftY;
+        float oRightX, oRightY;
 
-        
+        // obstacle vertices
+        obtacleVerts arenaV;
+        obtacleVerts oTopV;
+        obtacleVerts oBottomV;
+        obtacleVerts oLeftV;
+        obtacleVerts oRightV;
     };
 }   // namespace m1

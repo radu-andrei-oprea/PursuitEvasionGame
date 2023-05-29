@@ -41,13 +41,7 @@ void Epsm::Init()
     GetCameraInput()->SetActive(false);
 
     glm::vec3 corner = glm::vec3(0, 0, 0);
-    float squareSide = 100;
 
-
-    float cx, cy;
-    cx = corner.x + squareSide / 2;
-    cy = corner.y + squareSide / 2;
-    
     // screen limits
     limX = resolution.x;
     limY = resolution.y;
@@ -55,11 +49,53 @@ void Epsm::Init()
     // barrier width
     width = 0.1f;
 
+    // obstacle length
+    float squareSide = 200;
+
     // pursuer origins
     pX = limX - 300; pY = limY / 2 + 150;
     eX = limX - 500; eY = limY / 2 + 150;
 
-    
+    // Initialize tx and ty (the translation steps)
+    translateX = 0;
+    translateY = 0;
+
+    // obstacle coords
+    {
+        oTopX = limX / 2 - 100; oTopY = limY / 2 + 300;
+        oLeftX = 100; oLeftY = limY / 2;
+        oBottomX = limX / 2 + 100; oBottomY = 100;
+        oRightX = limX - 100; oRightY = limY / 2;
+    }
+
+    // obstacle vertices
+    {
+        arenaV.bottomLeft = { width, width };
+        arenaV.bottomRight = { limX - width, width };
+        arenaV.topLeft = { width, limY - width };
+        arenaV.topRight = { limX - width, limY - width };
+
+        oTopV.bottomLeft = { oTopX - squareSide / 2, oTopY - squareSide / 2 };
+        oTopV.bottomRight = { oTopX + squareSide / 2, oTopY - squareSide / 2 };
+        oTopV.topLeft = { oTopX - squareSide / 2, oTopY + squareSide / 2 };
+        oTopV.topRight = { oTopX + squareSide / 2, oTopY + squareSide / 2 };
+
+        oLeftV.bottomLeft = { oLeftX - squareSide / 2, oLeftY - squareSide / 2 };
+        oLeftV.bottomRight = { oLeftX + squareSide / 2, oLeftY - squareSide / 2 };
+        oLeftV.topLeft = { oLeftX - squareSide / 2, oLeftY + squareSide / 2 };
+        oLeftV.topRight = { oLeftX + squareSide / 2, oLeftY + squareSide / 2 };
+
+        oBottomV.bottomLeft = { oBottomX - squareSide / 2, oBottomY - squareSide / 2 };
+        oBottomV.bottomRight = { oBottomX + squareSide / 2, oBottomY - squareSide / 2 };
+        oBottomV.topLeft = { oBottomX - squareSide / 2, oBottomY + squareSide / 2 };
+        oBottomV.topRight = { oBottomX + squareSide / 2, oBottomY + squareSide / 2 };
+
+        oRightV.bottomLeft = { oRightX - squareSide / 2, oRightY - squareSide / 2 };
+        oRightV.bottomRight = { oRightX + squareSide / 2, oRightY - squareSide / 2 };
+        oRightV.topLeft = { oRightX - squareSide / 2, oRightY + squareSide / 2 };
+        oRightV.topRight = { oRightX + squareSide / 2, oRightY + squareSide / 2 };
+    }
+    // render
 
     // outer walls
     Mesh* bottomWall = object2D::square("bottomWall", corner, resolution.y / 3, glm::vec3(0.3f, 0.8f, 0.3f), true);
@@ -74,8 +110,9 @@ void Epsm::Init()
     Mesh* rightWall = object2D::square("rightWall", corner, resolution.y / 3, glm::vec3(0.3f, 0.8f, 0.3f), true);
     AddMeshToList(rightWall);
     
+    
     // obstacles
-    Mesh* obstacle = object2D::square("obstacle", corner, 200, glm::vec3(0.8f, 0.8f, 0.3f), true);
+    Mesh* obstacle = object2D::square("obstacle", corner, squareSide, glm::vec3(0.8f, 0.8f, 0.3f), true);
     AddMeshToList(obstacle);
 
     // pursuer
@@ -104,62 +141,67 @@ void Epsm::FrameStart()
 void Epsm::Update(float deltaTimeSeconds)
 {
     // render walls
-    // bottom
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Scale(50, width);
-    RenderMesh2D(meshes["bottomWall"], shaders["VertexColor"], modelMatrix);
-    // top    
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, limY);
-    modelMatrix *= transform2D::Scale(50, width);
-    RenderMesh2D(meshes["bottomWall"], shaders["VertexColor"], modelMatrix);
-    // left
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Scale(width, 50);
-    RenderMesh2D(meshes["leftWall"], shaders["VertexColor"], modelMatrix);
-    // right
-    modelMatrix = glm::mat3(1);
-    modelMatrix *= transform2D::Translate(limX, 0);
-    modelMatrix *= transform2D::Scale(width, 50);
-    RenderMesh2D(meshes["rightWall"], shaders["VertexColor"], modelMatrix);
-
+    {
+        // bottom
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= transform2D::Translate(0, 0);
+        modelMatrix *= transform2D::Scale(50, width);
+        RenderMesh2D(meshes["bottomWall"], shaders["VertexColor"], modelMatrix);
+        // top    
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= transform2D::Translate(0, limY);
+        modelMatrix *= transform2D::Scale(50, width);
+        RenderMesh2D(meshes["bottomWall"], shaders["VertexColor"], modelMatrix);
+        // left
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= transform2D::Translate(0, 0);
+        modelMatrix *= transform2D::Scale(width, 50);
+        RenderMesh2D(meshes["leftWall"], shaders["VertexColor"], modelMatrix);
+        // right
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= transform2D::Translate(limX, 0);
+        modelMatrix *= transform2D::Scale(width, 50);
+        RenderMesh2D(meshes["rightWall"], shaders["VertexColor"], modelMatrix);
+    }
 
     // obstacles
-    modelMatrix = glm::mat3(1);
-    //modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX / 2 - 100, limY / 2 + 300);
-    RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
+    {
+        // top
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= transform2D::Translate(oTopX, oTopY);
+        RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
-    modelMatrix = glm::mat3(1);
-    //modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(100, limY / 2);
-    RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
+        // left
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= transform2D::Translate(oLeftX, oLeftY);
+        RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
-    modelMatrix = glm::mat3(1);
-    //modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX / 2 + 100, 100);
-    RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
+        // bottom
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= transform2D::Translate(oBottomX, oBottomY);
+        RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
 
-    modelMatrix = glm::mat3(1);
-    //modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(limX - 100, limY / 2);
-    RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
-
+        // right
+        modelMatrix = glm::mat3(1);
+        modelMatrix *= transform2D::Translate(oRightX, oRightY);
+        RenderMesh2D(meshes["obstacle"], shaders["VertexColor"], modelMatrix);
+    }
     
     // pursuer
-    modelMatrix = glm::mat3(1);
-    //modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(pX, pY);
-    RenderMesh2D(meshes["pursuer"], shaders["VertexColor"], modelMatrix);
+    {
+        modelMatrix = glm::mat3(1);
+        //modelMatrix *= transform2D::Translate(0, 0);
+        modelMatrix *= transform2D::Translate(pX, pY);
+        RenderMesh2D(meshes["pursuer"], shaders["VertexColor"], modelMatrix);
+    }
 
     // evader
-    modelMatrix = glm::mat3(1);
-    //modelMatrix *= transform2D::Translate(0, 0);
-    modelMatrix *= transform2D::Translate(eX, eY);
-    RenderMesh2D(meshes["evader"], shaders["VertexColor"], modelMatrix);
-
+    {
+        modelMatrix = glm::mat3(1);
+        //modelMatrix *= transform2D::Translate(0, 0);
+        modelMatrix *= transform2D::Translate(eX, eY);
+        RenderMesh2D(meshes["evader"], shaders["VertexColor"], modelMatrix);
+    }
 }   
 
 
